@@ -9,12 +9,10 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Morsi Store DZ/Desktop/Symfony/e-commerce/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/Morsi Store DZ/Desktop/Symfony/e-commerce/templates/home/index.html.twig</code></li>
-    </ul>
+    <a class="btn btn-info" href="{{ path('app_category')}}">Categories</a>
+    <a class="btn btn-info" href="{{ path('category_add')}}">Add category</a>
+    <a class="btn btn-info" href="{{ path('app_register')}}">Register</a>
+    <a class="btn btn-info" href="{{ path('admin_register')}}">Admin Register</a>
+    <a class="btn btn-info" href="{{ path('app_login')}}">Login</a>
 </div>
 {% endblock %}

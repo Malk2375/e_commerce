@@ -22,8 +22,8 @@ class RegistrationController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setRoles(['ROLE_USER']);
             // encode the plain password
             $user->setPassword(
                     $userPasswordHasher->hashPassword(
@@ -37,6 +37,35 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
+            return $security->login($user, SecurityAuthenticator::class, 'main');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form,
+        ]);
+    }
+    #[Route('/admin', name: 'admin_register')]
+    public function admin(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setRoles(['ROLE_ADMIN']);
+            // encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // do anything else you need here, like send an email
+            return $this->redirectToRoute('app_home');
             return $security->login($user, SecurityAuthenticator::class, 'main');
         }
 

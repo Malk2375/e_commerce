@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toutes les catégories
+{% endblock %}
+{% block body %}
+<style>
+	.example-wrapper {
+		margin: 1em auto;
+		max-width: 1800px;
+		width: 95%;
+		font: 18px / 1.5 sans-serif;
+	}
+	.example-wrapper code {
+		background: #F5F5F5;
+		padding: 2px 6px;
+	}
+</style>
+
+<div class="example-wrapper">
+{% for message in app.flashes('addedcategory') %}
+	<div class="alert alert-dismissible alert-success mt-3">
+		<strong>{{message}}</strong>
+	</div>
+{% endfor %}
+{% for message in app.flashes('editedcategory') %}
+	<div class="alert alert-dismissible alert-success mt-3">
+		<strong>{{message}}</strong>
+	</div>
+{% endfor %}
+{% for message in app.flashes('categoriesupprime') %}
+	<div class="alert alert-dismissible alert-danger mt-3">
+		<strong>{{message}}</strong>
+	</div>
+{% endfor %}
+
+
+	<h1>Toutes les catégories</h1>
+		<a class="btn btn-success" href="{{ path('category_add') }}">Ajouter une categorie</a>
+	<table class="table table-hover mt-4">
+		<thead>
+			<tr>
+				<th scope="col">ID Catégorie</th>
+				<th scope="col">Nom de la catégorie</th>
+				<th scope="col">Les sous-catégories</th>
+				<th scope="col">Type</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for category in categories %}
+				<tr>
+					<td>{{ category.id }}</td>
+					<td>
+						<a type="button" class="btn btn-primary mb-3" href="{{ path('category_display', {'id': category.id}) }}">{{ category.name }}</a>
+					</td>
+					<td>
+						{% if subCategories[category.id] is not empty %}
+							{% for subCategory in subCategories[category.id] %}
+								<a type="button" class="btn btn-info mb-3" href="{{ path('subcategory', {'id': subCategory.id}) }}">{{ subCategory.name }}</a>
+                {% if not loop.last %}
+                {% endif %}
+								{% if not loop.last %}
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							<strong>Pas de sous-catégorie</strong>
+						{% endif %}
+					</td>
+					<td>{{ type[category.id] }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+

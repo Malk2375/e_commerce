@@ -9,10 +9,51 @@
 </style>
 
 <div class="example-wrapper">
-    <a class="btn btn-info" href="{{ path('app_category')}}">Categories</a>
-    <a class="btn btn-info" href="{{ path('category_add')}}">Add category</a>
-    <a class="btn btn-info" href="{{ path('app_register')}}">Register</a>
-    <a class="btn btn-info" href="{{ path('admin_register')}}">Admin Register</a>
-    <a class="btn btn-info" href="{{ path('app_login')}}">Login</a>
+    {% for message in app.flashes('typesuccess') %}
+        <div class="alert alert-dismissible alert-success mt-3">
+            <strong>{{message}}</strong>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('subcategorysuccess') %}
+        <div class="alert alert-dismissible alert-success mt-3">
+            <strong>{{message}}</strong>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('piecesuccess') %}
+        <div class="alert alert-dismissible alert-success mt-3">
+            <strong>{{message}}</strong>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('dejaconnecte') %}
+        <div class="alert alert-dismissible alert-warning mt-3">
+            <strong>{{message}}</strong>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('typesupprime') %}
+        <div class="alert alert-dismissible alert-danger mt-3">
+            <strong>{{message}}</strong>
+        </div>
+    {% endfor %}
+    
+
+    <a class="btn btn-info mb-3" href="{{ path('admin_register')}}">Admin Register</a>
+
+    <a class="btn btn-info mb-3" href="{{ path('app_register')}}">Register</a>
+
+    <a class="btn btn-info mb-3" href="{{ path('app_login')}}">Login</a>
+
+    <a class="btn btn-info mb-3" href="{{ path('type_add')}}">Add Type</a>
+    <a class="btn btn-info mb-3" href="{{ path('type_display')}}">Tous les Types</a>
+
+
+<a class="btn btn-info mb-3" href="{{ path('categories_display')}}">Categories</a>
+
+
+    <a class="btn btn-info mb-3" href="{{ path('category_add')}}">Add category</a>
+
+    <a class="btn btn-info mb-3" href="{{ path('add_subcategory')}}">Add Sub Category</a>
+
+    <a class="btn btn-info mb-3" href="{{ path('piece_add')}}">Ajouter une piece</a>
+
 </div>
 {% endblock %}

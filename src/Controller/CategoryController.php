@@ -4,72 +4,101 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Category;
-use App\Entity\User;
+use App\Entity\SubCategory;
 use App\Form\CategoryFormType;
-use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
-    #[Route('/category', name: 'app_category')]
-    public function index(): Response
-    {
-        return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
-        ]);
-    }
-    /**
-     * This controller creates a new category
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param User $user
-     * @return Response
-     */
     #[Route('/category/add', name: 'category_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager, User $user): Response
+    public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // $user = $this->getUser();
         $category = new Category();
         $form = $this->createForm(CategoryFormType::class, $category);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
             $entityManager->persist($category);
             $entityManager->flush();
-            $this->addFlash(
-                'success',
-                'La category a été créé avec succès'
-            );
-            return $this->redirectToRoute('app_category');
+
+            $this->addFlash('addedcategory', 'La catégorie a été créée avec succès');
+
+            return $this->redirectToRoute('categories_display');
         }
-        return $this->render('category/addCategory.html.twig', [
-            'form' => $form,
+
+        return $this->render('category/add.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    #[Route('/category/list', name: 'categories_display', methods: ['GET', 'POST'])]
+    public function list(EntityManagerInterface $entityManager): Response
+    {
+        $categories = $entityManager->getRepository(Category::class)->findAll();
+        $subCategories = [];
+        $type = [];
+        foreach ($categories as $category) {
+            $subCategories[$category->getId()] = $category->getSubCategories()->toArray();
+            $type[$category->getId()] = $category->getType();
+        }
+        return $this->render('category/list.html.twig', [
+            'categories' => $categories,
+            'subCategories' => $subCategories,
+            'type' => $type,
+        ]);
+    }
+    #[Route('/category/{id}', name: 'category_display', methods: ['GET', 'POST'])]
+    public function categorydisplay(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $category = $entityManager->getRepository(Category::class)->find($id);
+        $subcategories = $entityManager->getRepository(SubCategory::class)->findBy(['category' => $category]);
+        if (!$category) {
+            throw $this->createNotFoundException(
+                'Categorie pas trouvé numéro ' . $id
+            );
+        }
+
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+            'subcategories' => $subcategories,
+        ]);
+    }
+
+
+    #[Route('/category/edit/{id}', name: 'category_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, EntityManagerInterface $entityManager, Category $category): Response
+    {
+        $form = $this->createForm(CategoryFormType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('editedcategory', 'La catégorie a été modifiée avec succès');
+
+            return $this->redirectToRoute('categories_display');
+        }
+
+        return $this->render('category/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
     
-    #[Route('/category/edit/{id}', name: 'category_edit', methods: ['GET', 'POST'])]
-    public function update(Request $request, EntityManagerInterface $entityManager, Category $category, CategoryRepository $repository, int $id): Response
+    #[Route('/category/delete/{id}', name: 'category_delete', methods: ['GET', 'POST'])]
+    public function deletecategory(EntityManagerInterface $entityManager, int $id): Response
     {
-        $category = $repository->findOneBy(["id" => $id]);
-        $form = $this->createForm(CategoryFormType::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $category = $form->getData();
-            $entityManager->persist($category);
-            $entityManager->flush();
-            $this->addFlash(
-                'edit_success',
-                'La category a été modifiée avec succès'
+        $category = $entityManager->getRepository(Category::class)->find($id);
+        if (!$category) {
+            throw $this->createNotFoundException(
+                'Y a pas de categorie avec cet id :' . $id
             );
-            return $this->redirectToRoute('app_category');
         }
-        return $this->render('category/editCategory.html.twig', [
-            'form' => $form->CreateView(),
-        ]);
+        $entityManager->remove($category);
+        $entityManager->flush();
+        $this->addFlash('categoriesupprime', 'La categorie a été supprimée avec succès');
+        return $this->redirectToRoute('categories_display');
     }
 }

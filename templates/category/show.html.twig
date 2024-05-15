@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+{% block title %}Détails de categorie
+{% endblock %}
+{% block body %}
+<style>
+	.example-wrapper {
+		margin: 1em auto;
+		max-width: 800px;
+		width: 95%;
+		font: 18px / 1.5 sans-serif;
+	}
+	.example-wrapper code {
+		background: #F5F5F5;
+		padding: 2px 6px;
+	}
+</style>
+<div class="example-wrapper">
+<h2>Détails du categorie</h2>
+<h1>{{ category.name }}</h1>
+<a class="btn btn-warning" href="{{ path('category_edit', { 'id': category.id }) }}">Modifier</a>
+<a class="btn btn-danger" href="{{ path('category_delete', { 'id': category.id }) }}">Supprimer</a>
+	<p>
+		<strong>ID :</strong>
+    {{ category.id }}
+  </p>
+
+	<p>
+    <strong>Les sous categories de cette cateogrie :</strong>
+    {% if subcategories is not empty %}
+      <table class="table table-hover mt-4">
+        <thead>
+          <tr>
+            <th scope="col">ID sous categorie</th>
+            <th scope="col">Nom de la sous categorie</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for subcategory in subcategories %}
+            <tr>
+              <td>
+                {{ subcategory.id }}
+              </td>
+              <td>
+                {{ subcategory.name }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      Aucune sous categorie dans cette category
+    {% endif %}
+	</p>
+</div>
+{% endblock %}

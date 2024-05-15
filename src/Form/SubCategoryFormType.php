@@ -2,23 +2,23 @@
 
 namespace App\Form;
 
+use App\Entity\SubCategory;
 use App\Entity\Category;
-use App\Entity\TypeCategory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use App\Repository\TypeCategoryRepository;
+use App\Repository\CategoryRepository;
 
-class CategoryFormType extends AbstractType
+class SubCategoryFormType extends AbstractType
 {
-  private $typeCategoryRepository;
+  private $categoryRepository;
 
-  public function __construct(TypeCategoryRepository $typeCategoryRepository)
+  public function __construct(CategoryRepository $categoryRepository)
   {
-    $this->typeCategoryRepository = $typeCategoryRepository;
+    $this->categoryRepository = $categoryRepository;
   }
 
   public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,9 +27,9 @@ class CategoryFormType extends AbstractType
       ->add('name', TextType::class, [
         'attr' => ['class' => 'form-control'],
       ])
-      ->add('type', EntityType::class, [
-        'class' => TypeCategory::class,
-        'choices' => $this->typeCategoryRepository->findAll(),
+      ->add('category', EntityType::class, [
+        'class' => Category::class,
+        'choices' => $this->categoryRepository->findAll(),
         'choice_label' => 'name',
         'multiple' => false,
         'attr' => ['class' => 'form-select mt-3'],
@@ -42,7 +42,7 @@ class CategoryFormType extends AbstractType
   public function configureOptions(OptionsResolver $resolver): void
   {
     $resolver->setDefaults([
-      'data_class' => Category::class,
+      'data_class' => SubCategory::class,
     ]);
   }
 }

@@ -19,6 +19,11 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser()) {
+            // Redirigez l'utilisateur vers une autre route, par exemple la page d'accueil
+            $this->addFlash('dejaconnecte', 'Vous etes connecté');
+            return $this->redirectToRoute('app_home');
+        }
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -44,9 +49,14 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form,
         ]);
     }
-    #[Route('/admin', name: 'admin_register')]
+    #[Route('/admin/register', name: 'admin_register')]
     public function admin(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        // if ($this->getUser() || $this->getUser()->getRoles() === 'ROLE_ADMIN') {
+        //     // Redirigez l'utilisateur vers une autre route, par exemple la page d'accueil
+        //     $this->addFlash('dejaconnecte', 'Vous etes connecté');
+        //     return $this->redirectToRoute('app_home');
+        // }
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

@@ -21,53 +21,75 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'attr' => [
-                    'class' => 'form-control',
-                ]]
+                    'class' => 'form-control mb-3',
+                    'placeholder' => 'Entrez votre email',
+                ],
+                'error_bubbling' => true,
+                ]
                 )
             ->add('firstName', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control mt-3',
-                ]
+                    'class' => 'form-control mb-3',
+                    'placeholder' => 'Entrez votre Prénom',
+                ],
+                'label' => 'Prénom',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un prénom',
+                    ]),
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => 'Votre prénom doit etre au moins {{ limit }} characteres',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 255,
+                        'maxMessage' => 'Votre prénom doit etre au maximum {{ limit }} characteres',
+                    ]),
+                ],
+                'error_bubbling' => true,
             ])
             ->add('lastName', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control mt-3',
-                ]
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
+                    'class' => 'form-control mb-3',
+                'placeholder' => 'Entrez votre Nom',
                 ],
-                'attr' => [
-                    'class' => 'form-check-input mt-3',
-                ]
+                'label' => 'Nom',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un nom',
+                    ]),
+                    new Length(
+                        [
+                            'min' => 2,
+                            'minMessage' => 'Votre nom doit etre au moins {{ limit }} characteres',
+                        ]
+                    )
+                ],
+                'error_bubbling' => true,
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
+                
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'class' => 'form-control'
+                    'class' => 'form-control mb-3',
+                    'placeholder' => 'Entrez votre mot de passe',
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
+                    new NotBlank(),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Votre mot de passe doit etre au moins {{ limit }} characteres',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
+                'error_bubbling' => true,
             ])
-            ->add('submit', SubmitType::class, [
+            ->add('Creer', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary mt-4 btn-block',
+                    'class' => 'btn btn-primary mb-3 btn-block',
                 ]
             ]);
         ;

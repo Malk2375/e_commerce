@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}Tous les Types
+{% endblock %}
+{% block body %}
+<style>
+	.example-wrapper {
+		margin: 1em auto;
+		max-width: 1800px;
+		width: 95%;
+		font: 18px / 1.5 sans-serif;
+	}
+	.example-wrapper code {
+		background: #F5F5F5;
+		padding: 2px 6px;
+	}
+</style>
+<div class="example-wrapper">
+
+
+{% for message in app.flashes('addtypesuccess') %}
+	<div class="alert alert-dismissible alert-success mt-3">
+		<strong>{{message}}</strong>
+	</div>
+{% endfor %}
+	<h1>Tous les types</h1>
+	<a class="btn btn-primary" href="{{ path('type_add') }}">Ajouter un type</a>
+	<table class="table table-hover mt-4">
+		<thead>
+			<tr>
+				<th scope="col">ID type</th>
+				<th scope="col">Type</th>
+				<th style="width: 30rem;" scope="col">Liste des catégories</th>
+				<th scope="col">Ajouter categorie</th>
+				<th scope="col">Modifier</th>
+				<th scope="col">Supprimer</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for type in types %}
+				<tr>
+					<td>{{ type.id }}</td>
+					<td>{{ type.name }}</td>
+					<td>
+            {% if categories[type.id] is not empty %}
+							{% for category in categories[type.id] %}
+								<a type="button" class="btn btn-info mb-3" href="{{ path('category_display', {'id': category.id}) }}">{{ category.name }}</a>
+								{% if not loop.last %}
+								{% endif %}
+								{% if not loop.last %} 
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							<strong>Pas de catégorie</strong>
+						{% endif %}
+					</td>
+					<td>
+            <a type="button" class="btn btn-success mb-3" href="{{ path('category_add') }}">Ajouter</a>
+          </td>
+					<td>
+						<a type="button" class="btn btn-warning" href="{{ path('type_edit', {'id': type.id}) }}">Modifier ce type</a>
+					</td>
+					<td>
+						<a type="button" class="btn btn-danger" href="{{ path('type_delete', {'id': type.id}) }}">Supprimer ce type</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+
